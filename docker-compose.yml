@@ -1,0 +1,11 @@
+services:
+  notif:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    image: myges-grades-notifications:latest
+    container_name: myges-grades-notifications
+    restart: always
+    volumes:
+      - ./app.log:/app/app.log
+      - ./grades.xlsx:/app/grades.xlsx
