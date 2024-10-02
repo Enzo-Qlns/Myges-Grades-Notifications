@@ -18,3 +18,18 @@ def compare_grades(obj1, obj2):
             return None
     else:
         return None
+
+
+def compare_exams(obj1, obj2):
+    # Vérifier si les clés "exams" sont présentes dans les objets
+    if "exams" in obj1 and "exams" in obj2:
+        exam1 = obj1["exams"]
+        exam2 = obj2["exams"]
+
+        # Si les valeurs sont différentes, retourner la nouvelle valeur
+        if exam1 != exam2:
+            return exam2
+        else:
+            return None
+    else:
+        return None
