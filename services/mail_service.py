@@ -44,7 +44,7 @@ class MailService:
             raise ErrorResponse(f"Erreur lors de l'envoi du message : {str(e)}")
 
     @staticmethod
-    def template_message(grades: str) -> str:
+    def template_message_grades(grades: str) -> str:
         message = f"""
             <html>
                 <head>
@@ -80,6 +80,61 @@ class MailService:
                             margin-top: 20px;
                         }}
             
+                        .grades {{
+                            font-weight: bold;
+                            color: #42a5f5; /* Bleu ciel pour les notes */
+                        }}
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        Nouvelle note !
+                    </div>
+                    <div class="content">
+                        <p>Voici les nouvelles notes : <span class="grades">{grades if type(grades) == str else ", ".join(grades)}</span></p>
+                    </div>
+                </body>
+            </html>
+        """
+        return message
+
+    @staticmethod
+    def template_message_exam(grades: str) -> str:
+        message = f"""
+            <html>
+                <head>
+                    <style>
+                        body {{
+                            font-family: Arial, sans-serif;
+                            background-color: #e3f2fd; /* Bleu ciel doux */
+                            color: #333;
+                            margin: 0;
+                            padding: 20px;
+                        }}
+
+                        p {{
+                            line-height: 1.6;
+                            font-size: 16px;
+                        }}
+
+                        .header {{
+                            background-color: #42a5f5; /* Bleu plus soutenu */
+                            color: white;
+                            padding: 10px;
+                            text-align: center;
+                            font-size: 24px;
+                            font-weight: bold;
+                            border-radius: 8px;
+                        }}
+
+                        .content {{
+                            background-color: white;
+                            padding: 20px;
+                            border-radius: 8px;
+                            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                            margin-top: 20px;
+                        }}
+
                         .grades {{
                             font-weight: bold;
                             color: #42a5f5; /* Bleu ciel pour les notes */
