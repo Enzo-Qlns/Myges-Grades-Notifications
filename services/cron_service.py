@@ -86,7 +86,7 @@ class CronService:
         """
         self.jobs = [job for job in self.jobs if job['func'] != func]
 
-    def crontab_get_marks(self):
+    def crontab_get_marks(self) -> None:
         """
         Fonction pour récuperer les notes.
         :return:
@@ -101,6 +101,7 @@ class CronService:
 
         # Comparer les notes pour vérifier s'il y a des nouvelles notes
         differences_grades = marks_utils.compare_grades(grades, old_grades)
+        differences_exams = marks_utils.compare_exams(grades, old_grades)
 
         # Comparer les notes pour vérifier s'il y a des nouvelles notes
         if differences_grades:
@@ -113,7 +114,23 @@ class CronService:
 
             # Envoyer un e-mail avec les nouvelles notes
             try:
-                self.mail_service.template_message(grades=differences_grades)
+                self.mail_service.template_message_grades(grades=differences_grades)
+                print("E-mail envoyé avec succès !")
+            except Exception as e:
+                raise ErrorResponse(f"Erreur lors de l'envoi du message : {str(e)}")
+
+        # Comparer les notes pour vérifier s'il y a une nouvelle note d'exam
+        elif differences_exams:
+            # Supprimer toutes les notes du fichier Excel
+            self.excel_service.delete_all_grades()
+            time.sleep(1)
+
+            # Enregistrer les nouvelles notes dans le fichier Excel
+            self.excel_service.save_grades(grades)
+
+            # Envoyer un e-mail avec les nouvelles notes
+            try:
+                self.mail_service.template_message_exam(grades=differences_grades)
                 print("E-mail envoyé avec succès !")
             except Exception as e:
                 raise ErrorResponse(f"Erreur lors de l'envoi du message : {str(e)}")
@@ -125,4 +142,4 @@ class CronService:
             # Enregistrer les nouvelles notes dans le fichier Excel
             self.excel_service.save_grades(grades)
             current_date = datetime.now().strftime("%H:%M:%S")
-            raise ErrorResponse(f"Pas de nouvelles notes à {str(current_date)}")
+            raise ErrorResponse("Pas de nouvelles moyennes ou d'exam")
