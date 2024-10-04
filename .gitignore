@@ -3,4 +3,4 @@
 .env
 *.log
 *.xlsx
-tests
+tests/
