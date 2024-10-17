@@ -14,7 +14,7 @@ Ce projet est un script Python qui envoie des notifications de notes via Telegra
 
 1. Clonez le dépôt :
     ```sh
-    git clone <URL_DU_DEPOT>
+    git clone https://github.com/Enzo-Qlns/myges-grades-notifications.git
     cd myges-grades-notification
     ```
 
