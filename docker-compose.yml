@@ -6,8 +6,3 @@ services:
     image: myges-grades-notifications:latest
     container_name: myges-grades-notifications
     restart: always
-    volumes:
-      - not-vol:/app
-
-volumes:
-  not-vol:
