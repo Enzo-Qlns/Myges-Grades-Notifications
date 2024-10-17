@@ -61,3 +61,11 @@ class MyGESService:
         res = conn.getresponse()
         data = res.read().decode()
         return json.loads(data).get('result')
+
+
+    # def get_grades(self, year: int) -> dict:
+    #     conn = http.client.HTTPConnection("localhost:3000")
+    #     conn.request("GET", f"/grades")
+    #     res = conn.getresponse()
+    #     data = res.read().decode()
+    #     return json.loads(data)

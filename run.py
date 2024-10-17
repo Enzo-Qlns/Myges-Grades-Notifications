@@ -1,27 +1,32 @@
 import time
 
+from config import settings
 from services.logger_service import FILE_NAME
+from services.telegram_service import TelegramService
 
 
 def run():
     from services.cron_service import CronService
-    from services.excel_service import ExcelService
-    from services.mail_service import MailService
+    from services.csv_service import CSVManager
     from services.myges_service import MyGESService
     from services.logger_service import LoggerService
 
     myges_service = MyGESService()
-    excel_service = ExcelService(filename="grades.xlsx")
+    csv_service = CSVManager(filename="grades.csv")
     logger = LoggerService(FILE_NAME)
-    mail_service = MailService(logger=logger)
+    telegram_service = TelegramService(
+        token=settings.TELEGRAM_BOT_TOKEN,
+        channel_id=settings.TELEGRAM_CHANNEL_ID,
+        logger=logger
+    )
     cron_service = CronService(
         myges_service=myges_service,
-        excel_service=excel_service,
-        mail_service=mail_service,
+        csv_service=csv_service,
+        telegram_service=telegram_service,
     )
 
     # Ajouter une tâche pour récupérer les notes toutes les 5 secondes
-    cron_service.add_job(cron_service.crontab_get_marks, interval_sec=5)
+    cron_service.add_job(cron_service.crontab_get_marks, interval_sec=1)
 
     # Démarrer le service cron
     cron_service.start()
@@ -35,4 +40,5 @@ def run():
 
 
 if __name__ == "__main__":
+    print("Démarrage du script...")
     run()

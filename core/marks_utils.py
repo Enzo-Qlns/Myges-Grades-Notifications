@@ -1,35 +1,82 @@
-def compare_grades(obj1, obj2):
-    # Vérifier si les clés "grades" sont présentes dans les objets
-    if "grades" in obj1 and "grades" in obj2:
-        grades1 = obj1["grades"]
-        grades2 = obj2["grades"]
+import ast
 
-        # Si les tableaux ont des différences, identifier les nouvelles valeurs
-        if grades1 != grades2:
-            # Trouver les différences dans grades2 par rapport à grades1
-            differences = [grade for grade in grades2 if grade not in grades1]
 
-            # Retourner uniquement les nouvelles valeurs différentes
-            if differences:
-                return differences
-            else:
-                return None
-        else:
+def str_to_dict(arr):
+    """
+    Converti un tableau de string en tableau de dictionnaire
+    :param arr: Array
+    :return: Array
+    """
+    new_arr = []
+    for key in arr:
+        k = key.get('grades')
+        if isinstance(k, str):
+            try:
+                for elt in ast.literal_eval(k):
+                    new_arr.append(elt)
+            except (ValueError, SyntaxError):
+                print(f"Erreur lors de la conversion de old_grade: {k}")
+    return new_arr
+
+
+def equality_check(arr1, arr2, size1, size2):
+    """
+    Compare deux tableaux
+    :param arr1: Array 1
+    :param arr2: Array 2
+    :param size1: Size of array 1
+    :param size2: Size of array 2
+    :return: Boolean
+    """
+    if size1 != size2:
+        return False
+    arr1.sort()
+    arr2.sort()
+    for i in range(0, size2):
+        if arr1[i] != arr2[i]:
+            return False
+    return True
+
+
+def compare_grades(new_grades, old_grades):
+    """
+    Compare les notes
+    :param new_grades: dict
+    :param old_grades: dict
+    :return:
+    """
+    old_grades_dict = str_to_dict(old_grades)
+
+    for _ in old_grades_dict:
+        for new_grade_dict in new_grades:
+            new_grade_list = new_grade_dict.get('grades')
+            course = new_grade_dict.get('course')
+            if not equality_check(new_grade_list, old_grades_dict, len(new_grade_list), len(old_grades_dict)):
+                obj_to_return = {
+                    'course': course,
+                    'grades': new_grade_list,
+                }
+                return obj_to_return
             return None
-    else:
-        return None
 
 
 def compare_exams(obj1, obj2):
-    # Vérifier si les clés "exams" sont présentes dans les objets
-    if "exams" in obj1 and "exams" in obj2:
-        exam1 = obj1["exams"]
-        exam2 = obj2["exams"]
-
-        # Si les valeurs sont différentes, retourner la nouvelle valeur
-        if exam1 != exam2:
-            return exam2
-        else:
-            return None
-    else:
-        return None
+    """
+    Compare les notes d'examens
+    :param new_grades: dict
+    :param old_grades: dict
+    :return:
+    """
+    for obj1Elt in obj1:
+        for obj2Elt in obj2:
+            if obj1Elt.get('exam') is None:
+                return None
+            if obj1Elt.get('exam') == '':
+                return None
+            if str(obj1Elt.get('exam')) != str(obj2Elt.get('exam')):
+                obj_to_return = {
+                    'course': obj1Elt.get('course'),
+                    'exam': obj1Elt.get('exam'),
+                }
+                return obj_to_return
+    return None

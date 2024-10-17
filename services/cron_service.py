@@ -7,13 +7,13 @@ from exceptions import ErrorResponse
 
 
 class CronService:
-    def __init__(self, myges_service, excel_service, mail_service) -> None:
+    def __init__(self, myges_service, csv_service, telegram_service) -> None:
         self.thread = None
         self.jobs = []
         self.running = False
         self.myges_service = myges_service
-        self.excel_service = excel_service
-        self.mail_service = mail_service
+        self.csv_service = csv_service
+        self.telegram_service = telegram_service
         self.lock = threading.Lock()  # Verrou pour éviter les exécutions concurrentes
 
     def add_job(self, func, interval_sec, *args, **kwargs):
@@ -52,8 +52,8 @@ class CronService:
         """
         Méthode pour exécuter une tâche avec un verrouillage.
         :param func: La fonction à exécuter.
-        :param args: Les arguments de la fonction.
-        :param kwargs: Les arguments nommés de la fonction.
+        :param args: Les args de la fonction.
+        :param kwargs: Les key words de la fonction.
         :return: None
         """
         with self.lock:
@@ -97,7 +97,7 @@ class CronService:
         grades = self.myges_service.get_grades(year=year)
 
         # Récupérer les anciennes notes depuis le fichier Excel
-        old_grades = self.excel_service.get_grades()
+        old_grades = self.csv_service.read_data()
 
         # Comparer les notes pour vérifier s'il y a des nouvelles notes
         differences_grades = marks_utils.compare_grades(grades, old_grades)
@@ -105,41 +105,33 @@ class CronService:
 
         # Comparer les notes pour vérifier s'il y a des nouvelles notes
         if differences_grades:
-            # Supprimer toutes les notes du fichier Excel
-            self.excel_service.delete_all_grades()
-            time.sleep(1)
-
             # Enregistrer les nouvelles notes dans le fichier Excel
-            self.excel_service.save_grades(grades)
+            self.csv_service.write_data(grades)
 
             # Envoyer un e-mail avec les nouvelles notes
             try:
-                self.mail_service.template_message_grades(grades=differences_grades)
-                print("E-mail envoyé avec succès !")
+                self.telegram_service.send_message(
+                    message=f"""
+                        Nouvelle{"s" if len(differences_grades.get('grades')) > 1 else ""} note{"s" if len(differences_grades.get('grades')) > 1 else ""} en {differences_grades.get('course')}! => {', '.join(map(str, differences_grades.get('grades')))}
+                    """
+                )
             except Exception as e:
                 raise ErrorResponse(f"Erreur lors de l'envoi du message : {str(e)}")
 
         # Comparer les notes pour vérifier s'il y a une nouvelle note d'exam
         elif differences_exams:
-            # Supprimer toutes les notes du fichier Excel
-            self.excel_service.delete_all_grades()
-            time.sleep(1)
-
             # Enregistrer les nouvelles notes dans le fichier Excel
-            self.excel_service.save_grades(grades)
+            self.csv_service.write_data(grades)
 
             # Envoyer un e-mail avec les nouvelles notes
             try:
-                self.mail_service.template_message_exam(grades=differences_grades)
-                print("E-mail envoyé avec succès !")
+                self.telegram_service.send_message(
+                    message=f"""
+                            Nouvelle note d'examen en {differences_exams.get('course')}! => {differences_exams.get('exam')}
+                    """
+                )
             except Exception as e:
                 raise ErrorResponse(f"Erreur lors de l'envoi du message : {str(e)}")
         else:
-            # Supprimer toutes les notes du fichier Excel
-            self.excel_service.delete_all_grades()
-            time.sleep(1)
-
             # Enregistrer les nouvelles notes dans le fichier Excel
-            self.excel_service.save_grades(grades)
-            current_date = datetime.now().strftime("%H:%M:%S")
-            raise ErrorResponse("Pas de nouvelles moyennes ou d'exam")
+            self.csv_service.write_data(grades)

@@ -3,4 +3,4 @@ requests==2.32.3
 pydantic[dotenv]
 urllib3<2.0.0
 openpyxl
-mailjet_rest
+python-telegram-bot
