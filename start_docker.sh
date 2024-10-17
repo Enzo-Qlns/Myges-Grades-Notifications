@@ -6,10 +6,10 @@ if [ ! -f app.log ]; then
     echo "Created app.log"
 fi
 
-# Check if grades.xlsx exists, if not, create it
-if [ ! -f grades.xlsx ]; then
-    touch grades.xlsx
-    echo "Created grades.xlsx"
+# Check if grades.csv exists, if not, create it
+if [ ! -f grades.csv ]; then
+    touch grades.csv
+    echo "Created grades.csv"
 fi
 
 # Pull the latest changes from the git repository
