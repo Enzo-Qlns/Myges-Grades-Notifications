@@ -2,8 +2,7 @@
 
 ## Description
 
-Ce projet est un script Python qui envoie des notifications de notes via Telegram en utilisant les informations de
-connexion MYGES et l'api Skolae.
+Ce projet est un script Python qui envoie des notifications de notes via Telegram en utilisant l'api Skolae.
 
 ## Prérequis
 
