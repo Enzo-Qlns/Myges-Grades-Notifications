@@ -3,7 +3,8 @@ from logging.handlers import RotatingFileHandler
 
 FILE_NAME = 'app.log'
 MAX_BYTES = 5 * 1024 * 1024  # 5 MB
-BACKUP_COUNT = 5  # Nombre de fichiers de sauvegarde
+BACKUP_COUNT = 5  # Number of backup files
+MAX_LINES = 1000  # Maximum number of lines in the log file
 
 
 class LoggerService:
@@ -48,8 +49,20 @@ class LoggerService:
 
         if log_type in log_methods:
             log_methods[log_type](message)
+            self._truncate_log_file_if_needed()
         else:
             raise ValueError(f"Unknown log type: {log_type}")
+
+    def _truncate_log_file_if_needed(self):
+        """
+        Truncate the log file if the number of lines exceeds MAX_LINES.
+        """
+        with open(FILE_NAME, 'r') as file:
+            lines = file.readlines()
+
+        if len(lines) > MAX_LINES:
+            with open(FILE_NAME, 'w') as file:
+                file.writelines(lines[-MAX_LINES:])
 
     def debug(self, message: str):
         self.log('debug', message)
