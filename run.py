@@ -1,19 +1,19 @@
 import time
 
 from config import settings
-from services.logger_service import FILE_NAME
+
 from services.telegram_service import TelegramService
+from services.cron_service import CronService
+from services.csv_service import CSVManager
+from services.myges_service import MyGESService
+from services.logger_service import LoggerService
 
 
 def run():
-    from services.cron_service import CronService
-    from services.csv_service import CSVManager
-    from services.myges_service import MyGESService
-    from services.logger_service import LoggerService
 
     myges_service = MyGESService()
     csv_service = CSVManager(filename="grades.csv")
-    logger = LoggerService(FILE_NAME)
+    logger = LoggerService()
     telegram_service = TelegramService(
         token=settings.TELEGRAM_BOT_TOKEN,
         channel_id=settings.TELEGRAM_CHANNEL_ID,
