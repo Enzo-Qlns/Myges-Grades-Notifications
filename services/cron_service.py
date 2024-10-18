@@ -99,39 +99,40 @@ class CronService:
         # Récupérer les anciennes notes depuis le fichier Excel
         old_grades = self.csv_service.read_data()
 
-        # Comparer les notes pour vérifier s'il y a des nouvelles notes
-        differences_grades = marks_utils.compare_grades(grades, old_grades)
-        differences_exams = marks_utils.compare_exams(grades, old_grades)
+        if grades and old_grades:
+            # Comparer les notes pour vérifier s'il y a des nouvelles notes
+            differences_grades = marks_utils.compare_grades(grades, old_grades)
+            differences_exams = marks_utils.compare_exams(grades, old_grades)
 
-        # Comparer les notes pour vérifier s'il y a des nouvelles notes
-        if differences_grades:
-            # Enregistrer les nouvelles notes dans le fichier Excel
-            self.csv_service.write_data(grades)
+            # Comparer les notes pour vérifier s'il y a des nouvelles notes
+            if differences_grades:
+                # Enregistrer les nouvelles notes dans le fichier Excel
+                self.csv_service.write_data(grades)
 
-            # Envoyer un e-mail avec les nouvelles notes
-            try:
-                self.telegram_service.send_message(
-                    message=f"""
-                        Nouvelle{"s" if len(differences_grades.get('grades')) > 1 else ""} note{"s" if len(differences_grades.get('grades')) > 1 else ""} en {differences_grades.get('course')}! => {', '.join(map(str, differences_grades.get('grades')))}
-                    """
-                )
-            except Exception as e:
-                raise ErrorResponse(f"Erreur lors de l'envoi du message : {str(e)}")
+                # Envoyer un e-mail avec les nouvelles notes
+                try:
+                    self.telegram_service.send_message(
+                        message=f"""
+                            Nouvelle{"s" if len(differences_grades.get('grades')) > 1 else ""} note{"s" if len(differences_grades.get('grades')) > 1 else ""} en {differences_grades.get('course')}! => {', '.join(map(str, differences_grades.get('grades')))}
+                        """
+                    )
+                except Exception as e:
+                    raise ErrorResponse(f"Erreur lors de l'envoi du message : {str(e)}")
 
-        # Comparer les notes pour vérifier s'il y a une nouvelle note d'exam
-        elif differences_exams:
-            # Enregistrer les nouvelles notes dans le fichier Excel
-            self.csv_service.write_data(grades)
+            # Comparer les notes pour vérifier s'il y a une nouvelle note d'exam
+            elif differences_exams:
+                # Enregistrer les nouvelles notes dans le fichier Excel
+                self.csv_service.write_data(grades)
 
-            # Envoyer un e-mail avec les nouvelles notes
-            try:
-                self.telegram_service.send_message(
-                    message=f"""
-                            Nouvelle note d'examen en {differences_exams.get('course')}! => {differences_exams.get('exam')}
-                    """
-                )
-            except Exception as e:
-                raise ErrorResponse(f"Erreur lors de l'envoi du message : {str(e)}")
-        else:
-            # Enregistrer les nouvelles notes dans le fichier Excel
-            self.csv_service.write_data(grades)
+                # Envoyer un e-mail avec les nouvelles notes
+                try:
+                    self.telegram_service.send_message(
+                        message=f"""
+                                Nouvelle note d'examen en {differences_exams.get('course')}! => {differences_exams.get('exam')}
+                        """
+                    )
+                except Exception as e:
+                    raise ErrorResponse(f"Erreur lors de l'envoi du message : {str(e)}")
+            else:
+                # Enregistrer les nouvelles notes dans le fichier Excel
+                self.csv_service.write_data(grades)
