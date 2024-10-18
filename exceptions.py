@@ -1,6 +1,6 @@
-from services.logger_service import LoggerService, FILE_NAME
+from services.logger_service import LoggerService
 
-logger = LoggerService(FILE_NAME)
+logger = LoggerService()
 
 
 class BaseResponse(Exception):
