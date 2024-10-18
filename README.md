@@ -2,8 +2,7 @@
 
 ## Description
 
-Ce projet est un script Python qui envoie des notifications de notes via Telegram en utilisant l'api Skolae.
-
+Ce projet codé en Python, permet d'envoyer des notifications des nouvelles notes via Telegram en utilisant l'API Skolae.
 ## Prérequis
 
 - Python 3.x
@@ -55,7 +54,6 @@ Modifiez le fichier `.env` :
 #############
 # MYGES ENV #
 #############
-
 MYGES_LOGIN=VotreLogin
 MYGES_PASSWORD=VotreMotDePasse
 
