@@ -1,21 +1,21 @@
 import logging
+from logging.handlers import RotatingFileHandler
 
 FILE_NAME = 'app.log'
-MAX_LINES = 1000
+MAX_BYTES = 5 * 1024 * 1024  # 5 MB
+BACKUP_COUNT = 5  # Nombre de fichiers de sauvegarde
 
 
 class LoggerService:
-    def __init__(self, log_file):
+    def __init__(self):
         """
         Initialize the LoggerService with a log file.
-        :param log_file: The path to the log file.
         """
-        self.log_file = log_file
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.DEBUG)
 
-        # Create file handler which logs even debug messages
-        fh = logging.FileHandler(log_file)
+        # Create rotating file handler which logs even debug messages
+        fh = RotatingFileHandler(FILE_NAME, maxBytes=MAX_BYTES, backupCount=BACKUP_COUNT)
         fh.setLevel(logging.DEBUG)
 
         # Create console handler with a higher log level
@@ -30,17 +30,6 @@ class LoggerService:
         # Add the handlers to the logger
         self.logger.addHandler(fh)
         self.logger.addHandler(ch)
-
-    def _truncate_log_file(self):
-        """
-        Truncate the log file if it exceeds the maximum number of lines.
-        """
-        with open(self.log_file, 'r') as file:
-            lines = file.readlines()
-
-        if len(lines) > MAX_LINES:
-            with open(self.log_file, 'w') as file:
-                file.writelines(lines[-MAX_LINES:])
 
     def log(self, log_type: str, message: str):
         """
@@ -61,8 +50,6 @@ class LoggerService:
             log_methods[log_type](message)
         else:
             raise ValueError(f"Unknown log type: {log_type}")
-
-        self._truncate_log_file()
 
     def debug(self, message: str):
         self.log('debug', message)
