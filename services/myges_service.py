@@ -1,3 +1,4 @@
+from typing import Union, List, Any
 from urllib.parse import urlparse, parse_qs
 import requests
 import http.client
@@ -49,7 +50,7 @@ class MyGESService:
 
         return access_token[0]
 
-    def get_grades(self, year: int) -> dict:
+    def get_grades(self, year: int) -> Union[list[Any], Any]:
         access_token = self.get_access_token()
 
         conn = http.client.HTTPSConnection("api.kordis.fr")
@@ -60,8 +61,14 @@ class MyGESService:
         conn.request("GET", f"/me/{year}/grades", payload, headers)
         res = conn.getresponse()
         data = res.read().decode()
-        return json.loads(data).get('result')
 
+        if res.status != 200:
+            raise Exception(f"Error {res.status}: {data}")
+
+        if not data:
+            return []
+
+        return json.loads(data).get('result')
 
     # def get_grades(self, year: int) -> dict:
     #     conn = http.client.HTTPConnection("localhost:3000")
