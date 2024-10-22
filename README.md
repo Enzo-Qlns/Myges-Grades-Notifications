@@ -78,7 +78,7 @@ TELEGRAM_CHANNEL_ID=VotreChannelID
 
 ## Auteur
 
-[Enzo QUELENIS](www.enzoquelenis.fr)
+[Enzo QUELENIS](https://www.enzoquelenis.fr)
 
 ## License
 
