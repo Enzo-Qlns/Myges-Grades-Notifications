@@ -9,6 +9,11 @@ class TelegramService:
         self.logger = logger
 
     def send_message(self, message: str):
+        """
+        Envoie un message sur le canal Telegram
+        :param message: String
+        :return:
+        """
         data = {
             "chat_id": self.channel_id,
             "text": message,

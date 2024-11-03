@@ -17,6 +17,10 @@ class MyGESService:
         self._oauth_authorize_url = f"https://authentication.kordis.fr/oauth/authorize?client_id={self._client_id}&response_type=token"
 
     def get_access_token(self) -> str:
+        """
+        Recupere l'access token pour l'API MyGES
+        :return: L'access token
+        """
         response = requests.get(
             url=self._oauth_authorize_url,
             auth=(self._login, self._password),
@@ -32,6 +36,11 @@ class MyGESService:
 
     @staticmethod
     def extract_access_token(headers) -> str:
+        """
+        Extrait l'access token du header de la reponse
+        :param headers: Les headers de la reponse
+        :return: L'access token
+        """
         location = headers.get("Location")
 
         if not location:
@@ -51,6 +60,11 @@ class MyGESService:
         return access_token[0]
 
     def get_grades(self, year: int) -> Union[list[Any], Any]:
+        """
+        Recupere les notes de l'annee donnee
+        :param year: L'annee
+        :return: Les notes
+        """
         access_token = self.get_access_token()
 
         conn = http.client.HTTPSConnection("api.kordis.fr")
@@ -70,6 +84,9 @@ class MyGESService:
 
         return json.loads(data).get('result')
 
+    """
+    Cette methode est utilisé pour les tests
+    """
     # def get_grades(self, year: int) -> dict:
     #     conn = http.client.HTTPConnection("localhost:3000")
     #     conn.request("GET", f"/grades")

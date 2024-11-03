@@ -25,13 +25,13 @@ def run():
         telegram_service=telegram_service,
     )
 
-    # Ajouter une tâche pour récupérer les notes toutes les 5 secondes
+    # Add a task to get the grades every 5 seconds
     cron_service.add_job(cron_service.crontab_get_marks, interval_sec=1)
 
-    # Démarrer le service cron
+    # Add cron job
     cron_service.start()
 
-    # Garder le script en cours d'exécution
+    # Keep the script running
     try:
         while True:
             time.sleep(1)
@@ -40,5 +40,5 @@ def run():
 
 
 if __name__ == "__main__":
-    print("Démarrage du script...")
+    print("Starting the script...")
     run()

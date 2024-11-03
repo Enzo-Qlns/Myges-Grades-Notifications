@@ -9,9 +9,6 @@ MAX_LINES = 1000  # Maximum number of lines in the log file
 
 class LoggerService:
     def __init__(self):
-        """
-        Initialize the LoggerService with a log file.
-        """
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.DEBUG)
 
@@ -34,9 +31,9 @@ class LoggerService:
 
     def log(self, log_type: str, message: str):
         """
-        Log a message with a specific type.
-        :param log_type: The type of the log message.
-        :param message: The message to log.
+        Log un message avec le type de log spécifié.
+        :param log_type: Le type de log (debug, info, warning, error, critical).
+        :param message: Le message à log.
         :return: None
         """
         log_methods = {
@@ -53,9 +50,10 @@ class LoggerService:
         else:
             raise ValueError(f"Unknown log type: {log_type}")
 
-    def _truncate_log_file_if_needed(self):
+    @staticmethod
+    def _truncate_log_file_if_needed():
         """
-        Truncate the log file if the number of lines exceeds MAX_LINES.
+        Truncate le fichier de log si le nombre de lignes dépasse MAX_LINES.
         """
         with open(FILE_NAME, 'r') as file:
             lines = file.readlines()
@@ -65,16 +63,41 @@ class LoggerService:
                 file.writelines(lines[-MAX_LINES:])
 
     def debug(self, message: str):
+        """
+        Log un message de debug.
+        :param message: Le message à log
+        :return:
+        """
         self.log('debug', message)
 
     def info(self, message: str):
+        """
+        Log un message d'info.
+        :param message: Le message à log
+        :return:
+        """
         self.log('info', message)
 
     def warning(self, message: str):
+        """
+        Log a warning message.
+        :param message: Le message à log
+        :return:
+        """
         self.log('warning', message)
 
     def error(self, message: str):
+        """
+        Log un message d'erreur.
+        :param message: Le message à log
+        :return:
+        """
         self.log('error', message)
 
     def critical(self, message: str):
+        """
+        Log un message critique.
+        :param message: Le message à log
+        :return:
+        """
         self.log('critical', message)

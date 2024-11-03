@@ -1,11 +1,11 @@
 import ast
 
 
-def compare_grades(new_grades, old_grades):
+def compare_grades(new_grades: list, old_grades: list) -> list:
     """
     Compare les notes
-    :param new_grades: dict
-    :param old_grades: dict
+    :param new_grades: Nouvelle note qui provient de l'API
+    :param old_grades: Ancienne note qui provient de la base de données
     :return:
     """
     obj_to_return = []
@@ -30,11 +30,11 @@ def compare_grades(new_grades, old_grades):
     return obj_to_return
 
 
-def compare_exams(obj1, obj2):
+def compare_exams(obj1: list, obj2: list) -> dict:
     """
     Compare les notes d'examens
-    :param new_grades: dict
-    :param old_grades: dict
+    :param new_grades: Nouvelle note qui provient de l'API
+    :param old_grades: Ancienne note qui provient de la base de données
     :return:
     """
     for obj1Elt in obj1:

@@ -89,7 +89,7 @@ class CronService:
     def crontab_get_marks(self) -> None:
         """
         Fonction pour récuperer les notes.
-        :return:
+        :return: None
         """
         year = datetime.now().year
 
@@ -138,6 +138,4 @@ class CronService:
                     raise ErrorResponse(f"Erreur lors de l'envoi du message : {str(e)}")
             else:
                 # Enregistrer les nouvelles notes dans le fichier Excel
-                # self.csv_service.write_data(grades)
-
-                pass
+                self.csv_service.write_data(grades)

@@ -13,6 +13,11 @@ class CSVManager:
         ]
 
     def write_data(self, data: List[Dict[str, Any]]) -> None:
+        """
+        Ecris les éléments dans le fichier CSV
+        :param data: Element à écrire
+        :return: None
+        """
         filtered_data = [{k: v for k, v in row.items() if k in self.fieldnames} for row in data]
         with open(self.filename, mode='w', newline='', encoding='utf-8') as file:
             writer = csv.DictWriter(file, fieldnames=self.fieldnames)
@@ -20,11 +25,19 @@ class CSVManager:
             writer.writerows(filtered_data)
 
     def read_data(self) -> List[Dict[str, Any]]:
+        """
+        Lit les éléments du fichier CSV
+        :return: List[Dict[str, Any]]
+        """
         with open(self.filename, mode='r', newline='', encoding='utf-8') as file:
             reader = csv.DictReader(file)
             return [row for row in reader]
 
     def delete_all_grades(self) -> None:
+        """
+        Supprime tous les éléments du fichier CSV
+        :return: None
+        """
         with open(self.filename, mode='w', newline='', encoding='utf-8') as file:
             writer = csv.DictWriter(file, fieldnames=self.fieldnames)
             writer.writeheader()
