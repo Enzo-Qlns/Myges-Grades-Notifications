@@ -30,24 +30,25 @@ def compare_grades(new_grades: list, old_grades: list) -> list:
     return obj_to_return
 
 
-def compare_exams(obj1: list, obj2: list) -> dict:
+def compare_exams(obj1: list, obj2: list) -> list:
     """
     Compare les notes d'examens
-    :param new_grades: Nouvelle note qui provient de l'API
-    :param old_grades: Ancienne note qui provient de la base de données
+    :param obj1: Nouvelle note qui provient de l'API
+    :param obj2: Ancienne note qui provient de la base de données
     :return:
     """
+    obj_to_return = []
     for obj1Elt in obj1:
         for obj2Elt in obj2:
             if obj1Elt.get('exam') is None:
-                return None
+                return obj_to_return
             if obj1Elt.get('exam') == '':
-                return None
+                return obj_to_return
             if str(obj1Elt.get('exam')) != str(obj2Elt.get('exam')):
-                obj_to_return = {
+                obj_to_return.append({
                     'course': obj1Elt.get('course'),
                     'exam': obj1Elt.get('exam'),
-                }
+                })
                 print("obj_to_return", obj_to_return)
                 return obj_to_return
-    return None
+    return obj_to_return
