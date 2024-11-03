@@ -99,7 +99,7 @@ class CronService:
         # Récupérer les anciennes notes depuis le fichier Excel
         old_grades = self.csv_service.read_data()
 
-        if grades and old_grades:
+        if grades:
             # Comparer les notes pour vérifier s'il y a des nouvelles notes
             differences_grades = marks_utils.compare_grades(grades, old_grades)
             differences_exams = marks_utils.compare_exams(grades, old_grades)
@@ -111,10 +111,13 @@ class CronService:
 
                 # Envoyer un e-mail avec les nouvelles notes
                 try:
-                    self.telegram_service.send_message(
-                        message=f"""
-                            Nouvelle{"s" if len(differences_grades.get('grades')) > 1 else ""} note{"s" if len(differences_grades.get('grades')) > 1 else ""} en {differences_grades.get('course')}! => {', '.join(map(str, differences_grades.get('grades')))}
+                    message = ""
+                    for differences_grade in differences_grades:
+                        message += f"""
+                            Nouvelle{"s" if len(differences_grade.get('grades')) > 1 else ""} note{"s" if len(differences_grade.get('grades')) > 1 else ""} en {differences_grade.get('course')} : {', '.join(map(str, differences_grade.get('grades')))}
                         """
+                    self.telegram_service.send_message(
+                        message=message
                     )
                 except Exception as e:
                     raise ErrorResponse(f"Erreur lors de l'envoi du message : {str(e)}")
@@ -135,4 +138,6 @@ class CronService:
                     raise ErrorResponse(f"Erreur lors de l'envoi du message : {str(e)}")
             else:
                 # Enregistrer les nouvelles notes dans le fichier Excel
-                self.csv_service.write_data(grades)
+                # self.csv_service.write_data(grades)
+
+                pass
